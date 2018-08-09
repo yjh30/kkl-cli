@@ -5,7 +5,7 @@ const inquirer = require('inquirer')
 const utils = require('./utils')
 
 program
-  .version('1.0.0', '-v, --version')
+  .version('0.0.1', '-v, --version')
   .command('init <projectName>')
   .action(async projectName => {
     const isGenerate = await utils.confirmIsGenerate(projectName)

@@ -1,6 +1,6 @@
 {
   "name": "kkl-cli",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "基于vue移动端组件的脚手架工具",
   "bin": {
     "kkl-cli": "index.js"
