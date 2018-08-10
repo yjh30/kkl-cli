@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const shell = require('shelljs')
 const program = require('commander')
 const inquirer = require('inquirer')
 const ora = require('ora')
@@ -29,9 +30,11 @@ exports.confirmIsGenerate = function(projectName) {
         }
       ])
       .then(answers => {
-        execSync(`rm -rf ${projectPath}`)
-        if (!answers['isGenerate']) resolve(false)
-        resolve(true)
+        if (answers['isGenerate']) {
+          resolve(true)
+        } else {
+          resolve(false)
+        }
       })
   })
 }
@@ -81,9 +84,16 @@ exports.createProject = function(packageInfo) {
   const { name } = packageInfo
   const spinner = ora('downloading template').start()
 
+  try {
+    shell.rm('-rf', path.resolve(process.cwd(), name))
+  } catch (error) {
+     //... 
+  }
+
   exec(`git clone https://github.com/yjh30/vue-ssr-component-tpl.git ${name}`, (error, stdout, stderr) => {
     if (error) {
-      console.log(`downloading template fail ${error}`)
+      console.log(chalk.red(`downloading template fail ${error}`))
+      spinner.stop()
       return
     }
 
@@ -92,6 +102,12 @@ exports.createProject = function(packageInfo) {
     const packageFileName = `${name}/package.json`
     const packageJson = fs.readFileSync(packageFileName).toString()
     fs.writeFileSync(packageFileName, handlebars.compile(packageJson)(packageInfo))
+
+    try {
+      shell.rm('-rf', path.resolve(process.cwd(), `${name}/.git`))
+    } catch (error) {
+       //... 
+    }
 
     console.log(`
 # ${chalk.green('Project initialization finished!')}\n

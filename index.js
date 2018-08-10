@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const program = require('commander')
-const inquirer = require('inquirer')
 const utils = require('./utils')
 
 program
@@ -9,6 +8,9 @@ program
   .command('init <projectName>')
   .action(async projectName => {
     const isGenerate = await utils.confirmIsGenerate(projectName)
+
+    if (!isGenerate) { return }
+
     const packageInfo = await utils.getPackageInfo(projectName)
     utils.createProject(packageInfo)
   })
