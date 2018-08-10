@@ -1,6 +1,6 @@
 {
   "name": "kkl-cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "基于vue移动端组件的脚手架工具",
   "bin": {
     "kkl": "index.js"
@@ -25,9 +25,7 @@
     "handlebars": "^4.0.11",
     "inquirer": "^6.1.0",
     "log-symbols": "^2.2.0",
-    "ora": "^3.0.0"
-  },
-  "devDependencies": {
+    "ora": "^3.0.0",
     "shelljs": "^0.8.2"
   }
 }
