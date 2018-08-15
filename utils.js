@@ -72,7 +72,7 @@ exports.getPackageInfo = function(projectName) {
       .then(answers => {
         const { projectName, description, author } = answers
         resolve({
-          name: projectName,
+          name: projectName.replace(/^kkl-?/i, ''),
           description,
           author
         })
