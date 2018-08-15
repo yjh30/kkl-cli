@@ -72,6 +72,7 @@ exports.getPackageInfo = function(projectName) {
       .then(answers => {
         const { projectName, description, author } = answers
         resolve({
+          dirname: projectName,
           name: projectName.replace(/^kkl-?/i, ''),
           description,
           author
@@ -81,16 +82,16 @@ exports.getPackageInfo = function(projectName) {
 }
 
 exports.createProject = function(packageInfo) {
-  const { name } = packageInfo
+  const { dirname } = packageInfo
   const spinner = ora('downloading template').start()
 
   try {
-    shell.rm('-rf', path.resolve(process.cwd(), name))
+    shell.rm('-rf', path.resolve(process.cwd(), dirname))
   } catch (error) {
      //... 
   }
 
-  exec(`git clone https://github.com/yjh30/vue-ssr-component-tpl.git ${name}`, (error, stdout, stderr) => {
+  exec(`git clone https://github.com/yjh30/vue-ssr-component-tpl.git ${dirname}`, (error, stdout, stderr) => {
     if (error) {
       console.log(chalk.red(`downloading template fail ${error}`))
       spinner.stop()
@@ -99,12 +100,12 @@ exports.createProject = function(packageInfo) {
 
     spinner.succeed('downloading template succeed')
 
-    const packageFileName = `${name}/package.json`
+    const packageFileName = `${dirname}/package.json`
     const packageJson = fs.readFileSync(packageFileName).toString()
     fs.writeFileSync(packageFileName, handlebars.compile(packageJson)(packageInfo))
 
     try {
-      shell.rm('-rf', path.resolve(process.cwd(), `${name}/.git`))
+      shell.rm('-rf', path.resolve(process.cwd(), `${dirname}/.git`))
     } catch (error) {
        //... 
     }
@@ -112,7 +113,7 @@ exports.createProject = function(packageInfo) {
     console.log(`
 # ${chalk.green('Project initialization finished!')}\n
 # ========================\n
-To get started:\n${chalk.yellow(`cd ${name}\nnpm install (or if using yarn: yarn)\nnpm run dev\n`)}
+To get started:\n${chalk.yellow(`cd ${dirname}\nnpm install (or if using yarn: yarn)\nnpm run dev\n`)}
     `)
   })
 }
