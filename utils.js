@@ -67,15 +67,24 @@ exports.getPackageInfo = function(projectName) {
           name: 'author',
           message: 'Author',
           default: userInfo
+        },
+        {
+          type: 'input',
+          name: 'repositoryUrl',
+          message: 'repository url',
+          default: ''
         }
       ])
       .then(answers => {
-        const { projectName, description, author } = answers
+        const { projectName, description, author, repositoryUrl } = answers
         resolve({
           dirname: projectName,
           name: projectName.replace(/^kkl-?/i, ''),
           description,
-          author
+          author,
+          repository: {
+            url: repositoryUrl
+          }
         })
       })
   })
@@ -115,5 +124,26 @@ exports.createProject = function(packageInfo) {
 # ========================\n
 To get started:\n${chalk.yellow(`cd ${dirname}\nnpm install (or if using yarn: yarn)\nnpm run dev\n`)}
     `)
+
+    exports.updateReadme(packageInfo)
   })
+}
+
+exports.updateReadme = function(packageInfo) {
+  const readmePath = path.resolve(process.cwd(), `${packageInfo.dirname}/README.md`)
+  if (fs.existsSync(readmePath)) {
+    shell.rm('-rf', readmePath)
+  }
+
+  const context = `
+# @kkl/${packageInfo.name}
+> 用一句话概况组件（如：vue移动端h5 水平滑屏手势交互组件）
+### 安装
+\`\`\` bash
+npm i -S @kkl/${packageInfo.name}
+\`\`\`
+### 使用
+  `
+
+  fs.writeFileSync(readmePath, context)
 }

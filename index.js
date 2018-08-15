@@ -12,7 +12,7 @@ program
     if (!isGenerate) { return }
 
     const packageInfo = await utils.getPackageInfo(projectName)
-    utils.createProject(packageInfo)
+    utils.createProject(packageInfo, utils.updateReadme)
   })
 
 program.parse(process.argv)
