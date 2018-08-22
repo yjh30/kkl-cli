@@ -9,6 +9,8 @@ const handlebars = require('handlebars')
 const { exec, execSync } = require('child_process')
 
 module.exports = {
+  installed: false,
+
   async init(projectName) {
     const isGenerate = await this.confirmIsGenerate(projectName)
     if (!isGenerate) { return }
@@ -204,7 +206,7 @@ module.exports = {
 
     process.chdir(`${process.cwd()}/${dirname}`)
     execSync('git init')
-    process.chdir(path.resolve(__dirname, ''))
+    process.chdir(path.resolve(process.cwd(), '../'))
   },
 
   /**
@@ -266,8 +268,8 @@ module.exports = {
             return this.successHandler(dirname)
           }
           process.chdir(`${process.cwd()}/${dirname}`)
-          execSync(`${type} install`)
-          process.chdir(path.resolve(__dirname, ''))
+          shell.exec(`${type} install`, { silent: false })
+          process.chdir(path.resolve(process.cwd(), '../'))
           this.successHandler(dirname)
         })
     })
