@@ -1,6 +1,6 @@
 {
   "name": "kkl-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "基于vue移动端组件的脚手架工具",
   "bin": {
     "kkl": "index.js"
@@ -27,5 +27,18 @@
     "log-symbols": "^2.2.0",
     "ora": "^3.0.0",
     "shelljs": "^0.8.2"
+  },
+  "devDependencies": {
+    "cz-conventional-changelog": "^2.1.0",
+    "ghooks": "^2.0.4",
+    "validate-commit-msg": "^2.14.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    },
+    "ghooks": {
+      "commit-msg": "validate-commit-msg"
+    }
   }
 }
