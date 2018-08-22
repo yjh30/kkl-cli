@@ -31,17 +31,17 @@ module.exports = {
     })
 
     await downloadPromise
-
     spinner.succeed('downloading template succeed')
-      console.log(`
-# ${chalk.green('Project initialization finished!')}\n
-# ========================\n
-To get started:\n${chalk.yellow(`cd ${dirname}\nnpm install (or if using yarn: yarn)\nnpm run dev\n`)}
-      `)
 
     this.updatePackageJson(packageInfo)
     this.updateReadme(packageInfo)
     this.gitInit(packageInfo)
+
+    const isInstall = await this.confirmIsInstallPackage()
+    if (!isInstall) {
+      return this.successHandler(dirname)
+    }
+    this.installPackage(dirname)
   },
 
   /**
@@ -205,5 +205,79 @@ To get started:\n${chalk.yellow(`cd ${dirname}\nnpm install (or if using yarn: y
     process.chdir(`${process.cwd()}/${dirname}`)
     execSync('git init')
     process.chdir(path.resolve(__dirname, ''))
+  },
+
+  /**
+   * confirmIsGenerate 确定是否执行npm install
+   * @return {Promise}
+   */
+  confirmIsInstallPackage() {
+    return new Promise(resolve => {
+      inquirer
+        .prompt([
+          {
+            type: 'confirm',
+            name: 'isInstallPackage',
+            default: true,
+            message: 'Should we run `npm install` for you after the project has been created? (recommended) '
+          }
+        ])
+        .then(answers => {
+          if (answers['isInstallPackage']) {
+            resolve(true)
+          } else {
+            resolve(false)
+          }
+        })
+    })
+  },
+
+  /**
+   * installPackage 执行npm install
+   * @return {Promise}
+   */
+  installPackage(dirname) {
+    return new Promise(resolve => {
+      inquirer
+        .prompt([
+          {
+            name: 'installType',
+            type: 'list',
+            choices: [
+              {
+                name: 'Yes, use NPM',
+                value: 'npm'
+              },
+              {
+                name: 'Yes, use Yarn',
+                value: 'yarn'
+              },
+              {
+                name: 'No, I will handle that myself',
+                value: ''
+              }
+            ],
+            default: 'npm'
+          }
+        ])
+        .then(answers => {
+          const type = answers['installType']
+          if (type === '') {
+            return this.successHandler(dirname)
+          }
+          process.chdir(`${process.cwd()}/${dirname}`)
+          execSync(`${type} install`)
+          process.chdir(path.resolve(__dirname, ''))
+          this.successHandler(dirname)
+        })
+    })
+  },
+
+  successHandler(dirname) {
+      console.log(`
+# ${chalk.green('Project initialization finished!')}\n
+# ========================\n
+To get started:\n${chalk.yellow(`cd ${dirname}\nnpm install (or if using yarn: yarn)\nnpm run dev\n`)}
+      `)
   }
 }

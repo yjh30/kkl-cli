@@ -2,9 +2,10 @@
 
 const program = require('commander')
 const utils = require('./utils')
+const { version } = require('./package.json')
 
 program
-  .version('1.0.1', '-v, --version')
+  .version(`${version}`, '-v, --version')
   .command('init <projectName>')
   .action(async projectName => {
     await utils.init(projectName)
