@@ -7,7 +7,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "changelog": "node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s",
+    "changelog": "node_modules/.bin/conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
