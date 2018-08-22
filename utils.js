@@ -9,8 +9,6 @@ const handlebars = require('handlebars')
 const { exec, execSync } = require('child_process')
 
 module.exports = {
-  installed: false,
-
   async init(projectName) {
     const isGenerate = await this.confirmIsGenerate(projectName)
     if (!isGenerate) { return }
